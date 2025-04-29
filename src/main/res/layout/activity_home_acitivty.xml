@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/redheart"
+    android:background="@drawable/coloursheart"
     tools:context=".HomeActivity">
 
     <TextView
@@ -61,7 +61,7 @@
                     android:text="Donate"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:textSize="34sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -100,7 +100,7 @@
                     android:text="LeaderBoard"
                     android:textAlignment="center"
                     android:textColor="@color/material_dynamic_secondary0"
-                    android:textSize="34sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -139,7 +139,7 @@
                     android:text="Request"
                     android:textAlignment="center"
                     android:textColor="@color/material_dynamic_neutral_variant0"
-                    android:textSize="34sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -178,7 +178,7 @@
                     android:text="Match"
                     android:textAlignment="center"
                     android:textColor="@color/material_dynamic_neutral_variant0"
-                    android:textSize="34sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -253,8 +253,9 @@
                     android:layout_height="wrap_content"
                     android:text="LOGOUT"
                     android:textAlignment="center"
+                    android:fontFamily="@font/patrickhand_regular"
                     android:textColor="@color/material_dynamic_neutral10"
-                    android:textSize="34sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
