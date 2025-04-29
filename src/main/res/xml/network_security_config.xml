@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Enforce HTTPS traffic, no cleartext (HTTP) traffic allowed -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">lamp.ms.wits.ac.za</domain> <!-- Your domain -->
+    </domain-config>
+</network-security-config>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme -->
+    <style name="Theme.LendAHand" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Primary branding color -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorDarkBlue</item>
+        <item name="colorAccent">@color/colorSecondary</item>
+
+        <!-- You can also customize other things like background, text colors, etc -->
+        <item name="android:windowBackground">@color/colorWhite</item>
+    </style>
+
+</resources>

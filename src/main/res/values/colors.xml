@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Common Colors -->
+    <color name="colorWhite">#FFFFFF</color> <!-- White -->
+    <color name="colorBlack">#000000</color> <!-- Black -->
+    <color name="colorRed">#FF0000</color> <!-- Red -->
+    <color name="colorGreen">#00FF00</color> <!-- Green -->
+    <color name="colorBlue">#0000FF</color> <!-- Blue -->
+    <color name="colorYellow">#FFFF00</color> <!-- Yellow -->
+    <color name="colorMagenta">#FF00FF</color> <!-- Magenta -->
+    <color name="colorCyan">#00FFFF</color> <!-- Cyan -->
+
+    <!-- Shades -->
+    <color name="colorLightGray">#D3D3D3</color> <!-- Light Gray -->
+    <color name="colorDarkGray">#A9A9A9</color> <!-- Dark Gray -->
+    <color name="colorLightBlue">#ADD8E6</color> <!-- Light Blue -->
+    <color name="colorDarkBlue">#00008B</color> <!-- Dark Blue -->
+    <color name="teal_200">#03DAC5</color>
+
+
+    <!-- Pastels -->
+    <color name="colorPastelPink">#FFB6C1</color> <!-- Pastel Pink -->
+    <color name="colorPastelPurple">#D8BFD8</color> <!-- Pastel Purple -->
+    <color name="colorPastelYellow">#FFFFE0</color> <!-- Pastel Yellow -->
+    <color name="colorPastelGreen">#98FB98</color> <!-- Pastel Green -->
+
+    <!-- Gradient Colors -->
+    <color name="colorGradientStart">#FF7F50</color> <!-- Coral -->
+    <color name="colorGradientEnd">#FF6347</color> <!-- Tomato -->
+
+    <!-- Custom Colors -->
+    <color name="colorPrimary">#3F51B5</color> <!-- Primary Color (Blue) -->
+    <color name="colorSecondary">#FF4081</color> <!-- Secondary Color (Pink) -->
+
+    <!-- Define colorPrimaryDark and colorAccent -->
+    <color name="colorPrimaryDark">#303F9F</color> <!-- Darker shade of colorPrimary -->
+    <color name="colorAccent">#FF4081</color> <!-- Accent Color (Pink) -->
+</resources>
