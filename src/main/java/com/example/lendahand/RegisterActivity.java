@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
     // UI Elements
@@ -64,6 +66,12 @@ public class RegisterActivity extends AppCompatActivity {
                 String phoneNumber = edPhoneNumber.getText().toString();
                 String bio = edBio.getText().toString();
 
+                // Validate email format
+                if (!isValidEmail(email)) {
+                    Toast.makeText(RegisterActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // Validate password and confirm password
                 if (!password.equals(confirm)) {
                     Toast.makeText(RegisterActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
@@ -76,16 +84,75 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Send registration request to PHP server
-                registerUser(username, email, password, phoneNumber, bio);
+                // Check if username is already taken
+                checkUsernameAvailability(username, email, password, phoneNumber, bio);
             }
         });
     }
 
+    // Method to validate email format using regex
+    private boolean isValidEmail(String email) {
+        String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailPattern);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    // Method to check if the username is already taken
+    private void checkUsernameAvailability(final String username, final String email, final String password, final String phoneNumber, final String bio) {
+        // URL of the PHP script to check for duplicate username (change this to your actual URL)
+        String url = "https://lamp.ms.wits.ac.za/home/s1609751/checkusername.php";
+
+        // Create a new Volley request queue
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Map to hold the POST request parameters
+        Map<String, String> params = new HashMap<>();
+        params.put("username", username);
+
+        // Create the POST request to check if username exists
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    String message = jsonResponse.getString("message");
+
+                    if (success) {
+                        // Username is available, proceed with registration
+                        registerUser(username, email, password, phoneNumber, bio);
+                    } else {
+                        // Username already exists
+                        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(RegisterActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(RegisterActivity.this, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Return the parameters to be sent in the POST request
+                return params;
+            }
+        };
+
+        // Add the request to the Volley request queue
+        queue.add(request);
+    }
+
     // Method to register user by sending data to PHP server
     private void registerUser(String username, String email, String password, String phoneNumber, String bio) {
-        // URL of your PHP script (Make sure to change this to the correct URL)
-        String url = "https://lamp.ms.wits.ac.za/home/s1609751/registration.php";
+        // URL of your PHP script to handle registration
+        String url = "https://lamp.ms.wits.ac.za/home/s1609751/finalregistration.php";
 
         // Create a new Volley request queue
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -103,19 +170,16 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
-                    // Parse the JSON response from the server
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
                     String message = jsonResponse.getString("message");
 
-                    // Show a message based on success or failure
                     if (success) {
                         Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class)); // Redirect to LoginActivity
+                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     } else {
                         Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(RegisterActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();

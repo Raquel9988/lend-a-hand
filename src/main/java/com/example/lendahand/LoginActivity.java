@@ -1,9 +1,11 @@
 package com.example.lendahand;
 
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,15 +14,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edUsername, edPassword;
@@ -32,100 +33,96 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Initialize UI elements
         edUsername = findViewById(R.id.editTextLoginUsername);
         edPassword = findViewById(R.id.editTextLoginPassword);
         btn = findViewById(R.id.buttonLogin);
         tv = findViewById(R.id.textViewNewUser);
 
-        // Go to registration page if the user doesn't have an account
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String username = edUsername.getText().toString();
+                String password = edPassword.getText().toString();
+
+                if (username.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please fill all details", Toast.LENGTH_SHORT).show();
+                } else {
+                    new LoginTask().execute(username, password);
+                }
+            }
+        });
+
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
-
-        // Login button click listener
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Get input values
-                String username = edUsername.getText().toString();
-                String password = edPassword.getText().toString();
-
-                // Validate input fields
-                if (username.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Send login request to PHP server
-                loginUser(username, password);
-            }
-        });
     }
 
-    // Method to login user by sending data to PHP server
-    private void loginUser(final String username, final String password) {
-        // URL of your login PHP script
-        String url = "https://lamp.ms.wits.ac.za/home/s1609751/login.php";
+    private class LoginTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String username = params[0];
+            String password = params[1];
 
-        // Create a new Volley request queue
-        RequestQueue queue = Volley.newRequestQueue(this);
+            try {
+                // Prepare the URL for the PHP login script
+                URL url = new URL("https://lamp.ms.wits.ac.za/home/s1609751/login7.php");
 
-        // Create a POST request
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    // Parse the JSON response from the server
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
+                // Open a connection
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setDoOutput(true);
 
-                    // Show message based on success or failure
-                    if (success) {
-                        // Save user data (optional)
-                        JSONObject user = jsonResponse.getJSONObject("user");
-                        String userId = user.getString("id"); // Assuming you return user ID
+                // Send data to the server
+                String postData = "username=" + username + "&password=" + password;
+                OutputStream os = connection.getOutputStream();
+                os.write(postData.getBytes());
+                os.flush();
+                os.close();
 
-                        // Optionally, save user data to SharedPreferences for session management
-                        SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("userId", userId);
-                        editor.putString("username", username);
-                        editor.apply();
-
-                        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class)); // Redirect to the Home screen
-                    } else {
-                        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                // Get the server response
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Read the response
+                    InputStreamReader in = new InputStreamReader(connection.getInputStream());
+                    BufferedReader reader = new BufferedReader(in);
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
                     }
+                    reader.close();
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(LoginActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
+                    // Parse JSON response
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    return jsonResponse.getString("status");
+                } else {
+                    return "error";
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Toast.makeText(LoginActivity.this, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected java.util.Map<String, String> getParams() {
-                // Return the parameters to be sent in the POST request
-                java.util.Map<String, String> params = new java.util.HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
-                return params;
-            }
-        };
 
-        // Add the request to the Volley request queue
-        queue.add(request);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result.equals("success")) {
+                // Successful login
+                Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("username", edUsername.getText().toString());
+                editor.apply();
+                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            } else {
+                // Failed login
+                Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
+
