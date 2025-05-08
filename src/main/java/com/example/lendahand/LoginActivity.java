@@ -1,6 +1,5 @@
 package com.example.lendahand;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -125,4 +124,3 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 }
-

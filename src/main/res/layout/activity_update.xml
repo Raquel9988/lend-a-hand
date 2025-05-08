@@ -6,7 +6,59 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/colourshearts"
+    android:background="@drawable/cloudy2"
     tools:context=".UpdateActivity">
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  <Button
+      android:id="@+id/updatecontactbutton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="docontact"
+      android:text="Update Contact details"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.497"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.371" />
+
+  <Button
+      android:id="@+id/updatebiobutton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="doBio"
+      android:text="Update Bio"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.865" />
+
+  <EditText
+      android:id="@+id/phonenumberUpdate"
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:hint="Update phone number"
+      android:textColorHint="@color/colorBlack"
+      android:textSize="20sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.487"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.223" />
+
+  <EditText
+      android:id="@+id/boiupdate"
+      android:layout_width="266dp"
+      android:layout_height="185dp"
+      android:hint="Update Bio"
+      android:textColorHint="@color/colorBlack"
+      android:textSize="20sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.609" />
+</androidx.constraintlayout.widget.ConstraintLayout>
