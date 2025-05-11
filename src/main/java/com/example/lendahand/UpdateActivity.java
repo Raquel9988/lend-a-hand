@@ -1,6 +1,7 @@
 package com.example.lendahand;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -136,5 +137,11 @@ public class UpdateActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             Toast.makeText(UpdateActivity.this, result, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void DoBack(View view) {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish(); 
     }
 }

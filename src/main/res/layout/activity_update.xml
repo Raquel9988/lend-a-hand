@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/cloudy2"
+    android:background="@drawable/colourshearts"
     tools:context=".UpdateActivity">
 
   <Button
@@ -15,12 +15,13 @@
       android:layout_height="wrap_content"
       android:onClick="docontact"
       android:text="Update Contact details"
+      android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.497"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.371" />
+      app:layout_constraintVertical_bias="0.439" />
 
   <Button
       android:id="@+id/updatebiobutton"
@@ -28,12 +29,13 @@
       android:layout_height="wrap_content"
       android:onClick="doBio"
       android:text="Update Bio"
+      android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.498"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.865" />
+      app:layout_constraintVertical_bias="0.708" />
 
   <EditText
       android:id="@+id/phonenumberUpdate"
@@ -47,18 +49,31 @@
       app:layout_constraintHorizontal_bias="0.487"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.223" />
+      app:layout_constraintVertical_bias="0.367" />
 
   <EditText
       android:id="@+id/boiupdate"
-      android:layout_width="266dp"
-      android:layout_height="185dp"
+      android:layout_width="346dp"
+      android:layout_height="129dp"
       android:hint="Update Bio"
       android:textColorHint="@color/colorBlack"
       android:textSize="20sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.492"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.609" />
+      app:layout_constraintVertical_bias="0.578" />
+
+  <Button
+      android:id="@+id/buttonback"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Back"
+      android:textStyle="bold"
+      android:onClick="DoBack"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/updatebiobutton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
