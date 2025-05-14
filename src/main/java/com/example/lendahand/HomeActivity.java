@@ -37,15 +37,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        CardView Donate = findViewById(R.id.CardDonate);
-        Donate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, DonateActivity.class));
-
-
-            }
-        });
         CardView LeaderBoard = findViewById(R.id.cardLeaderBoard);
         LeaderBoard.setOnClickListener(new View.OnClickListener() {
             @Override
