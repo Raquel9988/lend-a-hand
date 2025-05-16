@@ -61,28 +61,30 @@ public class RequestActivity extends AppCompatActivity{
                 }
 
                 SharedPreferences preferences = getSharedPreferences("user_data", MODE_PRIVATE);
+                int user_id = preferences.getInt("user_id", -1);
                 String bio = preferences.getString("bio", "");
                 String phonenumber = preferences.getString("phonenumber", "");
 
-                if (bio.isEmpty() || phonenumber.isEmpty()){
+                if (user_id == -1 || bio.isEmpty() || phonenumber.isEmpty()){
                     Toast.makeText(RequestActivity.this, "Missing user bio/contact number", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 //submitting the input values
-                submitRequest(itemName, quantity, bio, phonenumber);
+                submitRequest(user_id, itemName, quantity, bio, phonenumber);
             }
         });
     }
 
     //Method to submit input values
-    private void submitRequest(String itemName, String quantity, String bio, String phonenumber){
+    private void submitRequest(int user_id, String itemName, String quantity, String bio, String phonenumber){
         //URL
         String url = "https://lamp.ms.wits.ac.za/home/s2814875/submit_request.php";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
         Map<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(user_id));
         params.put("item_name", itemName);
         params.put("quantity", quantity);
         params.put("bio", bio);
