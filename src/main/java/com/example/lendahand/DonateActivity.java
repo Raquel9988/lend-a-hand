@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class DonateActivity extends AppCompatActivity {
 
     // Declare global variables for UI components
     // UI component declarations
