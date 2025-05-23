@@ -1,4 +1,4 @@
-package com.lh.testing;
+package com.example.lendahand;
 
 import android.app.ProgressDialog;
 import android.content.Context;
