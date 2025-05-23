@@ -33,6 +33,7 @@
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginBottom="24dp"
         android:fontFamily="@font/patrickhand2_regular"
         android:text="Submit a Request"
@@ -63,15 +64,15 @@
             android:layout_height="241dp"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/editTextItemName"
+            <Spinner
+                android:id="@+id/itemSpinner"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Item Name"
-                android:inputType="textCapWords"
-                android:padding="14dp" />
+                android:layout_height="49dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/deliusswashcaps_regular"
+                android:popupBackground="#FFFFFF"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/editTextQuantity"
