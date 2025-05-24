@@ -7,12 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -22,61 +18,67 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_acitivty);
 
         SharedPreferences sharedpreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
-        String username = sharedpreferences.getString("username","").toString();
-        Toast.makeText(getApplicationContext(),"Welcome"+username,Toast.LENGTH_SHORT).show();
+        String username = sharedpreferences.getString("username", "");
+        Toast.makeText(getApplicationContext(), "Welcome " + username, Toast.LENGTH_SHORT).show();
 
-        CardView exit = findViewById(R.id.cardExit);
-        exit.setOnClickListener(new View.OnClickListener(){
+        CardView cardDonate = findViewById(R.id.cardDonate);
+        cardDonate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, DonateActivity.class));
+            }
+        });
+
+        CardView cardRequest = findViewById(R.id.cardRequest);
+        cardRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, RequestActivity.class));
+            }
+        });
+
+        CardView cardMatch = findViewById(R.id.cardMatch);
+        cardMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, MatchActivity.class));
+            }
+        });
+
+        CardView cardLeaderboard = findViewById(R.id.cardLeaderboard);
+        cardLeaderboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, LeaderBoardActivity.class));
+            }
+        });
+
+        CardView cardProfile = findViewById(R.id.cardProfile);
+        cardProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, ViewProfileActivity.class));
+            }
+        });
+
+        CardView cardUpdateBio = findViewById(R.id.cardUpdateBio);
+        cardUpdateBio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, UpdateActivity.class));
+            }
+        });
+
+        CardView cardExit = findViewById(R.id.cardExit);
+        cardExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.clear();
                 editor.apply();
                 startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-
+                finish(); // optional: to prevent back navigation
             }
         });
-
-        CardView LeaderBoard = findViewById(R.id.cardLeaderBoard);
-        LeaderBoard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, LeaderBoardActivity.class));
-
-
-            }
-        });
-        CardView Request = findViewById(R.id.cardRequest);
-        Request.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, RequestActivity.class));
-
-
-            }
-        });
-        CardView Match = findViewById(R.id.cardmatch);
-        Match.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, MatchActivity.class));
-
-
-            }
-        });
-
-        CardView Update = findViewById(R.id.cardUpdateBio);
-        Update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, UpdateActivity.class));
-
-
-            }
-        });
-
-
-
-
     }
 }
