@@ -101,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
     // Method to check if the username is already taken
     private void checkUsernameAvailability(final String username, final String email, final String password, final String phoneNumber, final String bio) {
         // URL of the PHP script to check for duplicate username (change this to your actual URL)
-        String url = "https://lamp.ms.wits.ac.za/home/s1609751/checkusername.php";
+        String url = "https://lamp.ms.wits.ac.za/home/s2611748/registration.php";
 
         // Create a new Volley request queue
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -152,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
     // Method to register user by sending data to PHP server
     private void registerUser(String username, String email, String password, String phoneNumber, String bio) {
         // URL of your PHP script to handle registration
-        String url = "https://lamp.ms.wits.ac.za/home/s1609751/finalregistration.php";
+        String url = "https://lamp.ms.wits.ac.za/home/s2611748/registration2.php";
 
         // Create a new Volley request queue
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -203,3 +203,4 @@ public class RegisterActivity extends AppCompatActivity {
         queue.add(request);
     }
 }
+
