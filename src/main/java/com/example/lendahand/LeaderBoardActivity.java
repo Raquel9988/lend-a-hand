@@ -40,7 +40,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
     }
 
     private void loadLeaderboard() {
-        new LoadLeaderboard().execute("https://lamp.ms.wits.ac.za/home/s1609751/donations.php");
+        new LoadLeaderboard().execute("https://lamp.ms.wits.ac.za/home/s2611748/leaderboard.php");
     }
 
     private class LoadLeaderboard extends AsyncTask<String, Void, ArrayList<Donor>> {
@@ -65,22 +65,13 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject obj = jsonArray.getJSONObject(i);
-                    String name = obj.getString("username");  // Corrected here
-                    int amount = obj.getInt("amount_donated");
+                    String name = obj.getString("username");
+                    int amount = obj.getInt("total_quantity");  // <-- Must match PHP key
 
-                    boolean found = false;
-                    for (Donor donor : donors) {
-                        if (donor.name.equals(name)) {
-                            donor.total += amount;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        donors.add(new Donor(name, amount));
-                    }
+                    donors.add(new Donor(name, amount));
                 }
 
+                // Sort in descending order of donation amount
                 donors.sort((d1, d2) -> Integer.compare(d2.total, d1.total));
 
             } catch (Exception e) {
@@ -91,10 +82,12 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Donor> donors) {
+            // Add header row
             LeaderboardRow header = new LeaderboardRow(LeaderBoardActivity.this);
             header.populate("Position", "Username", "Amount Donated");
             leaderboardContainer.addView(header);
 
+            // Add donor rows
             int rank = 1;
             for (Donor donor : donors) {
                 LeaderboardRow row = new LeaderboardRow(LeaderBoardActivity.this);
