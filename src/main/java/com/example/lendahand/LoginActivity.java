@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 // Prepare the URL for the PHP login script
-                URL url = new URL("https://lamp.ms.wits.ac.za/home/s1609751/login7.php");
+                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2611748/login.php");
 
                 // Open a connection
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
