@@ -41,7 +41,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
         // Build the URL to call the PHP script with POST parameters
-        String url = "https://lamp.ms.wits.ac.za/home/s1609751/get_profile.php";
+        String url = "https://lamp.ms.wits.ac.za/home/s2611748/viewProfile.php";
 
         // Use Volley StringRequest with POST method
         StringRequest request = new StringRequest(Request.Method.POST, url,
