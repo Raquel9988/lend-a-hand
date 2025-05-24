@@ -67,7 +67,7 @@ public class UpdateActivity extends AppCompatActivity {
             String phoneNumber = params[0];
             String result = "";
             try {
-                URL url = new URL("https://lamp.ms.wits.ac.za/home/s1609751/adjusting.php");
+                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2611748/updateProfile.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
@@ -107,7 +107,7 @@ public class UpdateActivity extends AppCompatActivity {
             String bioText = params[0];
             String result = "";
             try {
-                URL url = new URL("https://lamp.ms.wits.ac.za/home/s1609751/adjusting.php");
+                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2611748/updateProfile.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
@@ -142,6 +142,6 @@ public class UpdateActivity extends AppCompatActivity {
     public void DoBack(View view) {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
-        finish(); 
+        finish(); // Optional: close current activity so it's removed from the back stack
     }
 }
