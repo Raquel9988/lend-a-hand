@@ -51,7 +51,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                         if (array.length() > 0) {
                             JSONObject obj = array.getJSONObject(0);
                             phoneNumberTextView.setText(obj.getString("phone_number"));
-                            bioTextView.setText(obj.getString("Bio"));
+                            bioTextView.setText(obj.getString("bio")); // ✅ fixed key name
                         } else {
                             Toast.makeText(this, "Profile not found.", Toast.LENGTH_SHORT).show();
                         }
@@ -81,6 +81,4 @@ public class ViewProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
 }
