@@ -10,39 +10,21 @@
     tools:context=".RequestActivity"
     android:padding="24dp">
 
+    <!-- Title -->
 
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:text="Back to Home"
-        android:textStyle="bold"
-        android:backgroundTint="#FAFAFA"
-        android:background="@drawable/rounded_edittext"
-        android:textColor="@color/black"
-        android:padding="12dp"
-        android:drawablePadding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+    <!-- CardView for form -->
 
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
-        android:fontFamily="@font/patrickhand2_regular"
+        android:layout_marginTop="196dp"
+        android:fontFamily="@font/courgette_regular"
         android:text="Submit a Request"
         android:textColor="@color/black"
-        android:textSize="32sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/cardRequestForm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,53 +32,80 @@
         android:id="@+id/cardRequestForm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#FAFAFA"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
-        android:backgroundTint="#FAFAFA"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="20dp">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="241dp"
-            android:orientation="vertical">
-
-            <Spinner
-                android:id="@+id/itemSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="49dp"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="@font/deliusswashcaps_regular"
-                android:popupBackground="#FFFFFF"
-                android:textStyle="bold"
-                android:background="@drawable/rounded_edittext" />
-
-
-            <EditText
-                android:id="@+id/editTextQuantity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Quantity"
-                android:inputType="number"
-                android:padding="14dp" />
-
-            <Button
-                android:id="@+id/buttonSubmitRequest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="#4CAF50"
-                android:padding="12dp"
-                android:text="Submit Request"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-        </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- Back Button -->
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="222dp"
+        android:layout_height="62dp"
+        android:padding="12dp"
+        android:text="BACK"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+        app:layout_constraintVertical_bias="0.156">
+
+        <!-- Spinner with matching style -->
+        <Spinner
+            android:id="@+id/itemSpinner"
+            style="@android:style/Widget.DeviceDefault.Light.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/hintbox"
+            android:fontFamily="@font/deliusswashcaps_regular"
+            android:popupBackground="#FFFFFF"
+            android:textStyle="bold" />
+
+        <!-- Quantity -->
+        <EditText
+            android:id="@+id/editTextQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/hintbox"
+            android:hint="Enter quantity"
+            android:inputType="number"
+            android:padding="12dp"
+            android:textColor="#290f0f"
+            android:textColorHint="#BBDEFB" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/buttonSubmitRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="#4CAF50"
+            android:padding="12dp"
+            android:text="Submit Request"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
