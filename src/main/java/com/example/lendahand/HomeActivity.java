@@ -19,66 +19,30 @@ public class HomeActivity extends AppCompatActivity {
 
         SharedPreferences sharedpreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         String username = sharedpreferences.getString("username", "");
-        Toast.makeText(getApplicationContext(), "Welcome " + username, Toast.LENGTH_SHORT).show();
+        boolean isFirstLogin = sharedpreferences.getBoolean("isFirstLogin", true);
 
-        CardView cardDonate = findViewById(R.id.cardDonate);
-        cardDonate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, DonateActivity.class));
-            }
-        });
+        // Show welcome toast only once after login
+        if (isFirstLogin && !username.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Welcome " + username, Toast.LENGTH_SHORT).show();
 
-        CardView cardRequest = findViewById(R.id.cardRequest);
-        cardRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, RequestActivity.class));
-            }
-        });
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean("isFirstLogin", false);
+            editor.apply();
+        }
 
-        CardView cardMatch = findViewById(R.id.cardMatch);
-        cardMatch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, MatchActivity.class));
-            }
-        });
+        findViewById(R.id.cardDonate).setOnClickListener(view -> startActivity(new Intent(this, DonateActivity.class)));
+        findViewById(R.id.cardRequest).setOnClickListener(view -> startActivity(new Intent(this, RequestActivity.class)));
+        findViewById(R.id.cardMatch).setOnClickListener(view -> startActivity(new Intent(this, MatchActivity.class)));
+        findViewById(R.id.cardLeaderboard).setOnClickListener(view -> startActivity(new Intent(this, LeaderBoardActivity.class)));
+        findViewById(R.id.cardProfile).setOnClickListener(view -> startActivity(new Intent(this, ViewProfileActivity.class)));
+        findViewById(R.id.cardUpdateBio).setOnClickListener(view -> startActivity(new Intent(this, UpdateActivity.class)));
 
-        CardView cardLeaderboard = findViewById(R.id.cardLeaderboard);
-        cardLeaderboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, LeaderBoardActivity.class));
-            }
-        });
-
-        CardView cardProfile = findViewById(R.id.cardProfile);
-        cardProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, ViewProfileActivity.class));
-            }
-        });
-
-        CardView cardUpdateBio = findViewById(R.id.cardUpdateBio);
-        cardUpdateBio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, UpdateActivity.class));
-            }
-        });
-
-        CardView cardExit = findViewById(R.id.cardExit);
-        cardExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.clear();
-                editor.apply();
-                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-                finish(); // optional: to prevent back navigation
-            }
+        findViewById(R.id.cardExit).setOnClickListener(view -> {
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.apply();
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+            finish(); // prevent back to home
         });
     }
 }
