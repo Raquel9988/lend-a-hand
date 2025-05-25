@@ -66,13 +66,14 @@
 
             <Spinner
                 android:id="@+id/itemSpinner"
-                style="@android:style/Widget.DeviceDefault.Light.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="49dp"
                 android:layout_marginBottom="20dp"
                 android:fontFamily="@font/deliusswashcaps_regular"
                 android:popupBackground="#FFFFFF"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="@drawable/rounded_edittext" />
+
 
             <EditText
                 android:id="@+id/editTextQuantity"
