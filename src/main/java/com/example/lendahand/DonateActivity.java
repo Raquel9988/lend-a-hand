@@ -1,7 +1,9 @@
+// DonateActivity.java
 package com.example.lendahand;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -29,108 +31,112 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Activity for submitting donations, including:
+ * - Selecting items from a server-loaded spinner
+ * - Adding custom items via "Other" option
+ * - Validating and submitting donations to server
+ */
 public class DonateActivity extends AppCompatActivity {
 
-    // Declare global variables for UI components
-    // UI component declarations
-    Spinner itemSpinner;          // Dropdown for selecting items to donate
-    EditText quantityInput;       // Input field for donation quantity
-    EditText customItemInput;     // Input field for custom items (when "Other" is selected)
-    Button submitDonationButton;  // Button to submit the donation
+    // UI Components
+    Spinner itemSpinner;
+    EditText quantityInput, customItemInput;
+    Button submitDonationButton;
 
+    // Data structures
+    List<String> itemList = new ArrayList<>();       // Holds display names for spinner
+    Map<String, Integer> itemMap = new HashMap<>();  // Maps item names to their IDs
+    ArrayAdapter<String> adapter;                    // Adapter for the spinner
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Loads the layout XML
+        setContentView(R.layout.activity_donate);
 
-        // Initialize UI components from XML layout
-        itemSpinner = findViewById(R.id.itemSpinner);//in the onCreate method
+        // Initialize UI components
+        itemSpinner = findViewById(R.id.itemSpinner);
         quantityInput = findViewById(R.id.quantityInput);
         customItemInput = findViewById(R.id.customItemInput);
         submitDonationButton = findViewById(R.id.submitDonationButton);
+        Button backToHomeButton = findViewById(R.id.backToHomeButton);
 
-        // List to populate the Spinner
-        List<String> itemList = new ArrayList<>();
-        itemList.add("Select an item"); // Default prompt
-
-        // Set up the Spinner with a basic ArrayAdapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, itemList);
+        backToHomeButton.setOnClickListener(v -> finish());
+        // Set up spinner adapter with default Android layout
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, itemList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         itemSpinner.setAdapter(adapter);
 
-        // Show/hide the custom item field if "Other" is selected
+        // Load available items from server
+        loadItemsFromServer();
+
+        // Handle "Other" selection - shows/hides custom item input
         itemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = itemSpinner.getSelectedItem().toString();
-                if (selected.equals("Other")) {
-                    customItemInput.setVisibility(View.VISIBLE); // Show field
-                } else {
-                    customItemInput.setVisibility(View.GONE); // Hide field
-                }
+                customItemInput.setVisibility(selected.equals("Other") ? View.VISIBLE : View.GONE);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Handle case where nothing is selected (not needed here)
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Load item names from your PHP backend
+        // Set submit button click handler
+        submitDonationButton.setOnClickListener(this::doSubmit);
+    }
+
+    /**
+     * Fetches available items from server and populates the spinner
+     * Adds "Select an item" as first option and "Other" as last option
+     */
+    private void loadItemsFromServer() {
         String url = "https://lamp.ms.wits.ac.za/home/s2611748/get_items.php";
+        itemList.clear();
+        itemList.add("Select an item");  // Default first option
+
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
-                    // Loop through JSON array and add items to Spinner
+                    // Parse JSON response and populate item list/map
                     for (int i = 0; i < response.length(); i++) {
                         try {
-                            itemList.add(response.getString(i));
+                            JSONObject item = response.getJSONObject(i);
+                            String name = item.getString("item_name");
+                            int id = item.getInt("item_id");
+                            itemMap.put(name, id);  // Store name-ID mapping
+                            itemList.add(name);       // Add to display list
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                    adapter.notifyDataSetChanged(); // Refresh the spinner
+                    itemList.add("Other");  // Add "Other" option at the end
+                    adapter.notifyDataSetChanged();  // Refresh spinner
                 },
                 error -> Toast.makeText(this, "Failed to load items", Toast.LENGTH_SHORT).show()
         );
-        Volley.newRequestQueue(this).add(request); // Send the GET request
 
-        // Set up the submit button listener
-        submitDonationButton.setOnClickListener(this::doSubmit);
+        Volley.newRequestQueue(this).add(request);
     }
 
-    // Called when the user clicks "Submit Donation"
+    /**
+     * Handles donation submission with validation and server communication
+     * @param v The clicked view (submit button)
+     */
     public void doSubmit(View v) {
-        if (!validateForm()) return;// Don't proceed if validation fails
+        if (!validateForm()) return;  // Validate before proceeding
 
-        // Get values from form inputs
         String selectedItem = itemSpinner.getSelectedItem().toString();
         String customItem = customItemInput.getText().toString().trim();
         String finalItem = selectedItem.equals("Other") ? customItem : selectedItem;
         String quantityStr = quantityInput.getText().toString().trim();
 
-        // Show confirmation dialog before submitting
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm Donation")
-                .setMessage("You are about to donate:\n\n" +
-                        quantityStr + " x " + finalItem + "\n\nProceed?")
-                .setPositiveButton("YES", (dialog, which) -> {
-                    // User confirmed - show loading dialog and proceed with submission
-                    ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("Submitting donation...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
+        // Show loading dialog
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Submitting donation...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
-                    submitDonationToServer(finalItem, quantityStr, progressDialog);
-                })
-                .setNegativeButton("NO", null)
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .show();
-    }
-    // Submit donation data to server
-    private void submitDonationToServer(String item, String quantity, ProgressDialog progressDialog) {
-        // Get logged-in user's username from shared preferences
+        // Get logged-in username from shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("username", null);
 
@@ -140,59 +146,100 @@ public class DonateActivity extends AppCompatActivity {
             return;
         }
 
+        // Handle "Other" item case (requires inserting new item first)
+        if (selectedItem.equals("Other")) {
+            String insertUrl = "https://lamp.ms.wits.ac.za/home/s2611748/insert_item.php";
+
+            StringRequest insertItemRequest = new StringRequest(Request.Method.POST, insertUrl,
+                    response -> {
+                        try {
+                            // Parse new item ID from response
+                            JSONObject json = new JSONObject(response);
+                            int itemId = json.getInt("item_id");
+                            // Proceed with donation submission
+                            sendDonation(username, itemId, quantityStr, progressDialog);
+                        } catch (JSONException e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(this, "Invalid item insert response", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    error -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(this, "Failed to insert item.", Toast.LENGTH_SHORT).show();
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("item_name", finalItem);
+                    return params;
+                }
+            };
+
+            Volley.newRequestQueue(this).add(insertItemRequest);
+        } else {
+            // Use existing item ID from the map
+            int itemId = itemMap.get(finalItem);
+            sendDonation(username, itemId, quantityStr, progressDialog);
+        }
+    }
+
+    /**
+     * Sends donation data to server
+     * @param username Donor's username
+     * @param itemId ID of the donated item
+     * @param quantityStr Quantity being donated
+     * @param progressDialog Loading dialog to dismiss when complete
+     */
+    private void sendDonation(String username, int itemId, String quantityStr, ProgressDialog progressDialog) {
         String url = "https://lamp.ms.wits.ac.za/home/s2611748/submit_donation.php";
-        // Create POST request with Volley
+
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    // Handle server response
                     progressDialog.dismiss();
                     try {
                         JSONObject json = new JSONObject(response);
                         String status = json.getString("status");
-
                         if (status.equals("success")) {
                             showSuccessDialog(json.optString("message", "Donation submitted successfully!"));
                         } else {
-                            // Show error message from server or default message
-                            String errorMsg = json.optString("message", "Submission failed");
-                            showErrorDialog(errorMsg);
+                            showErrorDialog(json.optString("message", "Submission failed"));
                         }
                     } catch (JSONException e) {
                         showErrorDialog("Invalid server response");
                     }
                 },
                 error -> {
-                    // Handle network errors
                     progressDialog.dismiss();
                     showErrorDialog("Network error: " + error.getMessage());
-                }
-        ) {
+                }) {
             @Override
             protected Map<String, String> getParams() {
-                // Set POST parameters for the request
                 Map<String, String> params = new HashMap<>();
                 params.put("username", username);
-                params.put("item", item);
-                params.put("quantity", quantity);
+                params.put("item_id", String.valueOf(itemId));
+                params.put("quantity", quantityStr);
                 return params;
             }
         };
 
         // Set retry policy for the request
-        request.setRetryPolicy(new DefaultRetryPolicy(
-                10000, // 10 seconds timeout
+        request.setRetryPolicy(new DefaultRetryPolicy(10000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         Volley.newRequestQueue(this).add(request);
     }
 
+    /**
+     * Shows success dialog and resets form
+     * @param message Success message to display
+     */
     private void showSuccessDialog(String message) {
         new AlertDialog.Builder(this)
                 .setTitle("Success")
                 .setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> {
-                    // Reset form after successful submission
+                    // Reset form on success
                     itemSpinner.setSelection(0);
                     quantityInput.setText("");
                     customItemInput.setText("");
@@ -200,6 +247,10 @@ public class DonateActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Shows error dialog
+     * @param errorMessage Error message to display
+     */
     private void showErrorDialog(String errorMessage) {
         new AlertDialog.Builder(this)
                 .setTitle("Error")
@@ -208,12 +259,14 @@ public class DonateActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Validates form input before submission
+    /**
+     * Validates form inputs
+     * @return true if all validations pass, false otherwise
+     */
     public boolean validateForm() {
         String selectedItem = itemSpinner.getSelectedItem().toString();
         String quantityStr = quantityInput.getText().toString().trim();
         String customItem = customItemInput.getText().toString().trim();
-        String finalItem = selectedItem.equals("Other") ? customItem : selectedItem;
 
         // Validate item selection
         if (selectedItem.equals("Select an item")) {
@@ -221,36 +274,25 @@ public class DonateActivity extends AppCompatActivity {
             return false;
         }
 
-        // Validate custom item
+        // Validate custom item if "Other" selected
         if (selectedItem.equals("Other")) {
-            if (customItem.isEmpty()) {
-                Toast.makeText(this, "Please enter a custom item", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            if (customItem.length() < 4) {
-                Toast.makeText(this, "Item name too short (min 4 chars)", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            if (!customItem.matches("[a-zA-Z0-9 ]+")) {
-                Toast.makeText(this, "Only letters, numbers and spaces allowed", Toast.LENGTH_SHORT).show();
+            if (customItem.isEmpty() || customItem.length() < 4 || !customItem.matches("[a-zA-Z0-9 ]+")) {
+                Toast.makeText(this, "Enter valid custom item (min 4 letters/numbers)", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
 
-        // Validate quantity
+        // Validate quantity presence
         if (quantityStr.isEmpty()) {
             Toast.makeText(this, "Please enter quantity", Toast.LENGTH_SHORT).show();
             return false;
         }
 
+        // Validate quantity format and range
         try {
             int quantity = Integer.parseInt(quantityStr);
-            if (quantity <= 0) {
-                Toast.makeText(this, "Quantity must be greater than 0", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            if (quantity > 1000) {
-                Toast.makeText(this, "Quantity too large (max 1000)", Toast.LENGTH_SHORT).show();
+            if (quantity <= 0 || quantity > 1000) {
+                Toast.makeText(this, "Quantity must be 1-1000", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } catch (NumberFormatException e) {
