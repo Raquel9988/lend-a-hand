@@ -104,3 +104,4 @@
         app:layout_constraintTop_toBottomOf="@+id/bioTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
