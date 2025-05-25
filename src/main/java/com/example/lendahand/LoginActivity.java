@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -37,26 +36,18 @@ public class LoginActivity extends AppCompatActivity {
         btn = findViewById(R.id.buttonLogin);
         tv = findViewById(R.id.textViewNewUser);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = edUsername.getText().toString();
-                String password = edPassword.getText().toString();
+        btn.setOnClickListener(view -> {
+            String username = edUsername.getText().toString().trim();
+            String password = edPassword.getText().toString().trim();
 
-                if (username.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Please fill all details", Toast.LENGTH_SHORT).show();
-                } else {
-                    new LoginTask().execute(username, password);
-                }
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Please fill all details", Toast.LENGTH_SHORT).show();
+            } else {
+                new LoginTask().execute(username, password);
             }
         });
 
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
+        tv.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
     private class LoginTask extends AsyncTask<String, Void, String> {
@@ -66,27 +57,20 @@ public class LoginActivity extends AppCompatActivity {
             String password = params[1];
 
             try {
-                // Prepare the URL for the PHP login script
                 URL url = new URL("https://lamp.ms.wits.ac.za/home/s2611748/login.php");
-
-                // Open a connection
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
 
-                // Send data to the server
                 String postData = "username=" + username + "&password=" + password;
                 OutputStream os = connection.getOutputStream();
                 os.write(postData.getBytes());
                 os.flush();
                 os.close();
 
-                // Get the server response
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // Read the response
-                    InputStreamReader in = new InputStreamReader(connection.getInputStream());
-                    BufferedReader reader = new BufferedReader(in);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     StringBuilder response = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -94,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     reader.close();
 
-                    // Parse JSON response
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     return jsonResponse.getString("status");
                 } else {
@@ -109,18 +92,28 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if (result.equals("success")) {
-                // Successful login
+            if ("success".equals(result)) {
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
+
+                // Save login info and flag for first login
                 SharedPreferences sharedpreferences = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString("username", edUsername.getText().toString());
+                editor.putBoolean("isFirstLogin", true); // show welcome toast only once
                 editor.apply();
+
                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                finish();
             } else {
-                // Failed login
                 Toast.makeText(getApplicationContext(), "Invalid Username or Password", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void doForgotPassword(View view) {
+        String username = edUsername.getText().toString().trim();
+        Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
     }
 }
