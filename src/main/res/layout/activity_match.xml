@@ -1,41 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/colours">
+    android:background="@drawable/colourshearts"
+    tools:context=".MatchActivity"
+    android:padding="16dp">
 
-    <EditText
-        android:id="@+id/itemInput"
-        android:hint="Enter item name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/matchButton"
-        android:text="Match and Donate"
+    <!-- Title -->
+    <TextView
+        android:id="@+id/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"/>
+        android:text="Match Donations"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-
-    <Button
-        android:id="@+id/BackHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#555555"
-        android:text="Back to Home"
-        android:layout_gravity="center"
-        android:background="@drawable/rounded_background"
-        android:fontFamily="@font/meriendavariablefont"
-        android:layout_marginTop="16dp"/>
-
+    <!-- ListView -->
     <ListView
-        android:id="@+id/matchList"
-        android:layout_width="match_parent"
+        android:id="@+id/matchListView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp"/>
-</LinearLayout>
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:layout_constraintBottom_toTopOf="@id/buttonContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Button Container -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Back Button -->
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#555555"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- Refresh Button -->
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#4CAF50"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
