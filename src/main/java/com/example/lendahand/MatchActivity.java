@@ -1,7 +1,6 @@
 package com.example.lendahand;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,25 +28,20 @@ public class MatchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
-        // Initialize views
         matchListView = findViewById(R.id.matchListView);
         Button btnBack = findViewById(R.id.btnBack);
         Button btnRefresh = findViewById(R.id.btnRefresh);
 
-        // Set up adapter
         adapter = new MatchAdapter(this, matchList);
         matchListView.setAdapter(adapter);
 
-        // Back button click handler
         btnBack.setOnClickListener(v -> finish());
 
-        // Refresh button click handler
         btnRefresh.setOnClickListener(v -> {
             Toast.makeText(this, "Refreshing matches...", Toast.LENGTH_SHORT).show();
             fetchMatches();
         });
 
-        // Initial data load
         fetchMatches();
     }
 
@@ -80,5 +74,29 @@ public class MatchActivity extends AppCompatActivity {
         );
 
         Volley.newRequestQueue(this).add(request);
+    }
+
+    /**
+     * Update the matchList after a donation.
+     * If quantityDonated < quantity_needed, reduce the quantity needed.
+     * If quantityDonated >= quantity_needed, remove the match.
+     */
+    public void donateAmount(String requestId, int quantityDonated) {
+        for (int i = 0; i < matchList.size(); i++) {
+            HashMap<String, String> match = matchList.get(i);
+            if (match.get("request_id").equals(requestId)) {
+                int currentQty = Integer.parseInt(match.get("quantity_needed"));
+                int newQty = currentQty - quantityDonated;
+
+                if (newQty > 0) {
+                    match.put("quantity_needed", String.valueOf(newQty));
+                } else {
+                    matchList.remove(i);
+                }
+
+                adapter.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 }
