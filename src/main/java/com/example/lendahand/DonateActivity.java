@@ -1,6 +1,7 @@
 // DonateActivity.java
 package com.example.lendahand;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +60,7 @@ public class DonateActivity extends AppCompatActivity {
         quantityInput = findViewById(R.id.quantityInput);
         customItemInput = findViewById(R.id.customItemInput);
         submitDonationButton = findViewById(R.id.submitDonationButton);
-        Button backToHomeButton = findViewById(R.id.backToHomeButton);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button backToHomeButton = findViewById(R.id.backToHomeButton);
 
         backToHomeButton.setOnClickListener(v -> finish());
         // Set up spinner adapter with default Android layout
