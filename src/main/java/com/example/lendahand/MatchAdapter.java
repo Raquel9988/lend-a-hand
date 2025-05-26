@@ -3,6 +3,7 @@ package com.example.lendahand;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +49,7 @@ public class MatchAdapter extends ArrayAdapter<HashMap<String, String>> {
             holder = new ViewHolder();
             holder.requesterUsername = convertView.findViewById(R.id.requesterUsername);
             holder.requestedItem = convertView.findViewById(R.id.requestedItem);
-            holder.requestedQuantity = convertView.findViewById(R.id.requestedQuantity);
-            holder.allocateQuantity = convertView.findViewById(R.id.allocateQuantity);
+            holder.remainingQuantity = convertView.findViewById(R.id.remainingQuantity);
             holder.allocateButton = convertView.findViewById(R.id.allocateButton);
             convertView.setTag(holder);
         } else {
@@ -60,41 +60,70 @@ public class MatchAdapter extends ArrayAdapter<HashMap<String, String>> {
 
         holder.requesterUsername.setText("Requested by: " + match.get("requester_username"));
         holder.requestedItem.setText("Item: " + match.get("item_name"));
-        holder.requestedQuantity.setText("Quantity Needed: " + match.get("quantity_needed"));
+        holder.remainingQuantity.setText("Quantity Needed: " + match.get("quantity_needed"));
 
-        // Set default quantity to 1
-        holder.allocateQuantity.setText("1");
-
-        holder.allocateButton.setOnClickListener(v -> {
-            try {
-                int quantityToAllocate = Integer.parseInt(holder.allocateQuantity.getText().toString());
-                if (quantityToAllocate <= 0) {
-                    Toast.makeText(context, "Quantity must be positive", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                showConfirmationDialog(position, match, quantityToAllocate);
-            } catch (NumberFormatException e) {
-                Toast.makeText(context, "Invalid quantity", Toast.LENGTH_SHORT).show();
-            }
-        });
+        holder.allocateButton.setOnClickListener(v -> showQuantityInputDialog(position, match));
 
         return convertView;
     }
 
+    private void showQuantityInputDialog(int position, HashMap<String, String> match) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Enter donation quantity");
+
+        final EditText input = new EditText(context);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint("Quantity (max " + match.get("quantity_needed") + ")");
+        builder.setView(input);
+
+        builder.setPositiveButton("Donate", (dialog, which) -> {
+            String quantityStr = input.getText().toString().trim();
+            if (quantityStr.isEmpty()) {
+                Toast.makeText(context, "Please enter a quantity", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int quantity;
+            try {
+                quantity = Integer.parseInt(quantityStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(context, "Invalid quantity", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (quantity <= 0) {
+                Toast.makeText(context, "Quantity must be positive", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int quantityNeeded = Integer.parseInt(match.get("quantity_needed"));
+            if (quantity > quantityNeeded) {
+                Toast.makeText(context, "Cannot donate more than needed", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            showConfirmationDialog(position, match, quantity);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
     private void showConfirmationDialog(final int position, HashMap<String, String> match, int quantity) {
         new AlertDialog.Builder(context)
-                .setTitle("Confirm Allocation")
-                .setMessage(String.format("Do you want to donate %d %s to %s?",
+                .setTitle("Confirm Donation")
+                .setMessage(String.format("Donate %d of %s to %s?",
                         quantity,
                         match.get("item_name"),
                         match.get("requester_username")))
                 .setPositiveButton("Confirm", (dialog, which) ->
-                        allocateDonation(position, match.get("request_id"), quantity))
+                        allocateDonation(position, match, quantity))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void allocateDonation(final int position, String requestId, int quantity) {
+    private void allocateDonation(final int position, HashMap<String, String> match, int quantity) {
         SharedPreferences prefs = context.getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
         String donorUsername = prefs.getString("username", null);
 
@@ -104,7 +133,7 @@ public class MatchAdapter extends ArrayAdapter<HashMap<String, String>> {
         }
 
         StringRequest request = new StringRequest(Request.Method.POST, Constants.MATCH_DONATION_URL,
-                response -> handleAllocationResponse(position, response),
+                response -> handleAllocationResponse(position, match, quantity, response),
                 error -> {
                     Log.e(TAG, "Allocation error: " + error.getMessage());
                     Toast.makeText(context, "Network error. Try again.", Toast.LENGTH_SHORT).show();
@@ -114,7 +143,7 @@ public class MatchAdapter extends ArrayAdapter<HashMap<String, String>> {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("donor_username", donorUsername);
-                params.put("request_id", requestId);
+                params.put("request_id", match.get("request_id"));
                 params.put("quantity", String.valueOf(quantity));
                 return params;
             }
@@ -123,17 +152,19 @@ public class MatchAdapter extends ArrayAdapter<HashMap<String, String>> {
         Volley.newRequestQueue(context).add(request);
     }
 
-    private void handleAllocationResponse(int position, String response) {
+    private void handleAllocationResponse(int position, HashMap<String, String> match, int quantity, String response) {
         try {
             JSONObject json = new JSONObject(response);
             String status = json.getString("status");
             String message = json.getString("message");
 
-            if (status.equals("success")) {
-                matches.remove(position);
-                notifyDataSetChanged();
-            }
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+            if (status.equals("success")) {
+                if (context instanceof MatchActivity) {
+                    ((MatchActivity) context).donateAmount(match.get("request_id"), quantity);
+                }
+            }
         } catch (JSONException e) {
             Log.e(TAG, "JSON parsing error: " + e.getMessage());
             Toast.makeText(context, "Error processing response", Toast.LENGTH_SHORT).show();
@@ -143,8 +174,7 @@ public class MatchAdapter extends ArrayAdapter<HashMap<String, String>> {
     private static class ViewHolder {
         TextView requesterUsername;
         TextView requestedItem;
-        TextView requestedQuantity;
-        EditText allocateQuantity;
+        TextView remainingQuantity;
         Button allocateButton;
     }
 }
