@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/colourshearts"
+    android:background="@drawable/background"
+    tools:context=".RequestActivity"
     android:padding="24dp">
 
     <!-- Title -->
@@ -13,7 +15,7 @@
         android:id="@+id/donateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
+        android:layout_marginTop="32dp"
         android:fontFamily="@font/courgette_regular"
         android:text="Donate Items"
         android:textColor="@color/black"
@@ -21,90 +23,111 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Spinner for selecting item -->
-    <Spinner
-        android:id="@+id/itemSpinner"
-        android:layout_width="0dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/hintbox"
-        android:fontFamily="@font/deliusswashcaps_regular"
-        android:popupBackground="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/donateTitle"
-        />
-
-    <!-- Custom item input, only visible when "Other" is selected -->
-    <EditText
-        android:id="@+id/customItemInput"
+    <!-- Form Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardRequestForm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Enter custom item"
-        android:background="@drawable/hintbox"
-        android:padding="12dp"
-        android:textColor="#290f0f"
-        android:textColorHint="#BBDEFB"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/itemSpinner"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FAFAFA"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/donateTitle">
 
-    <!-- Quantity input -->
-    <EditText
-        android:id="@+id/quantityInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/hintbox"
-        android:hint="Enter quantity"
-        android:inputType="number"
-        android:padding="12dp"
-        android:textColor="#290f0f"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/customItemInput"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/submitDonationButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:onClick="doSubmit"
-        android:padding="12dp"
-        android:text="SUBMIT DONATION"
-        android:textSize="16sp"
-        android:contentDescription="Submit donation button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quantityInput"
-        />
+            <!-- Spinner -->
+            <Spinner
+                android:id="@+id/itemSpinner"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/hintbox"
+                android:fontFamily="@font/deliusswashcaps_regular"
+                android:popupBackground="#FFFFFF"
+                android:textStyle="bold" />
 
-    <!-- Back to Home Button -->
-    <Button
-        android:id="@+id/backToHomeButton"
-        android:layout_width="0dp"
+            <!-- Custom item input, only visible when "Other" is selected -->
+            <EditText
+                android:id="@+id/customItemInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/hintbox"
+                android:hint="Enter custom item"
+                android:visibility="gone"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="#290f0f"
+                android:textColorHint="#BBDEFB" />
+
+            <!-- Quantity Input -->
+            <EditText
+                android:id="@+id/quantityInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/hintbox"
+                android:hint="Enter quantity"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textColor="#290f0f"
+                android:textColorHint="#BBDEFB" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Button Container -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:padding="12dp"
-        android:text="BACK"
-        android:textSize="16sp"
-        android:contentDescription="Back to home button"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/submitDonationButton"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/cardRequestForm"
+        app:layout_constraintVertical_bias="0.406">
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submitDonationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_teal_button"
+            android:elevation="4dp"
+            android:fontFamily="@font/deliusswashcaps_regular"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:text="SUBMIT DONATION"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Back Button -->
+        <Button
+            android:id="@+id/backToHomeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_dark_button"
+            android:elevation="4dp"
+            android:fontFamily="@font/deliusswashcaps_regular"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:text="BACK"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
