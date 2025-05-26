@@ -1,48 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#FAFAFA"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:elevation="2dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#FFFFFF">
 
-    <TextView
-        android:id="@+id/requesterUsername"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Requested by: user123"
-        android:textColor="#333333"
-        android:textStyle="bold"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/requestedItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Item: Canned Beans"
-        android:textColor="#444444"
-        android:textSize="15sp"
-        android:layout_marginTop="4dp" />
+        <!-- Requester Info -->
+        <TextView
+            android:id="@+id/requesterUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Requested by: user123"
+            android:textColor="#333333"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:fontFamily="@font/deliusswashcaps_regular"/>
 
-    <TextView
-        android:id="@+id/remainingQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quantity Needed: 3"
-        android:textColor="#555555"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp" />
+        <!-- Item Info -->
+        <TextView
+            android:id="@+id/requestedItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item: Canned Beans"
+            android:textColor="#444444"
+            android:textSize="15sp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/deliusswashcaps_regular"/>
 
-    <Button
-        android:id="@+id/allocateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Allocate"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#4CAF50"
-        android:padding="10dp"
-        android:layout_gravity="start"/>
-</LinearLayout>
+        <!-- Quantity Needed -->
+        <TextView
+            android:id="@+id/remainingQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantity Needed: 3"
+            android:textColor="#555555"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="@font/deliusswashcaps_regular"/>
+
+        <!-- Allocate Button -->
+        <Button
+            android:id="@+id/allocateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ALLOCATE"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/rounded_teal_button"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:elevation="2dp"
+            android:fontFamily="@font/deliusswashcaps_regular"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
