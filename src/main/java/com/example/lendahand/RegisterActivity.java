@@ -1,5 +1,6 @@
 package com.example.lendahand;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btn;
     TextView tv;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
         edConfirm = findViewById(R.id.editTextConfirmPasswordReg);
         edBio = findViewById(R.id.editTextBioReg);
         btn = findViewById(R.id.ButtonLoginRegistration);
-        tv = findViewById(R.id.textViewRegistrationAlreadyHave);
+        tv = findViewById(R.id.buttonHaveAccount);
 
         // Go to LoginActivity if already have an account
         tv.setOnClickListener(new View.OnClickListener() {
