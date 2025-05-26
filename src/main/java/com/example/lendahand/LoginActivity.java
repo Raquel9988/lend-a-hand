@@ -1,5 +1,6 @@
 package com.example.lendahand;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btn;
     TextView tv;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         edUsername = findViewById(R.id.editTextLoginUsername);
         edPassword = findViewById(R.id.editTextLoginPassword);
         btn = findViewById(R.id.buttonLogin);
-        tv = findViewById(R.id.textViewNewUser);
+        tv = findViewById(R.id.buttonRegister);
 
         btn.setOnClickListener(view -> {
             String username = edUsername.getText().toString().trim();
