@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
-    // UI Elements
     EditText edUsername, edEmail, edPassword, edConfirm, edPhoneNumber, edBio;
     Button btn;
     TextView tv;
@@ -38,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Initialize UI elements
         edUsername = findViewById(R.id.editTextUsernameReg);
         edPassword = findViewById(R.id.editTextPasswordReg);
         edEmail = findViewById(R.id.editTextEmailReg);
@@ -48,7 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
         btn = findViewById(R.id.ButtonLoginRegistration);
         tv = findViewById(R.id.buttonHaveAccount);
 
-        // Go to LoginActivity if already have an account
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,43 +53,41 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // Register button click listener
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Get input values
-                String username = edUsername.getText().toString();
-                String email = edEmail.getText().toString();
+                String username = edUsername.getText().toString().trim();
+                String email = edEmail.getText().toString().trim();
                 String password = edPassword.getText().toString();
                 String confirm = edConfirm.getText().toString();
-                String phoneNumber = edPhoneNumber.getText().toString();
-                String bio = edBio.getText().toString();
+                String phoneNumber = edPhoneNumber.getText().toString().trim();
+                String bio = edBio.getText().toString().trim();
 
-                // Validate email format
                 if (!isValidEmail(email)) {
                     Toast.makeText(RegisterActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Validate password and confirm password
+                if (!isValidPhoneNumber(phoneNumber)) {
+                    Toast.makeText(RegisterActivity.this, "Phone number must start with +27 followed by 9 digits.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (!password.equals(confirm)) {
                     Toast.makeText(RegisterActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Validate password requirements
                 if (password.length() < 8 || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*()].*")) {
                     Toast.makeText(RegisterActivity.this, "Password must be at least 8 characters, contain a number, and a special character!", Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                // Check if username is already taken
                 checkUsernameAvailability(username, email, password, phoneNumber, bio);
             }
         });
     }
 
-    // Method to validate email format using regex
     private boolean isValidEmail(String email) {
         String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
         Pattern pattern = Pattern.compile(emailPattern);
@@ -100,66 +95,60 @@ public class RegisterActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
-    // Method to check if the username is already taken
+    private boolean isValidPhoneNumber(String phone) {
+        String phonePattern = "^\\+27[0-9]{9}$";
+        return phone.matches(phonePattern);
+    }
+
     private void checkUsernameAvailability(final String username, final String email, final String password, final String phoneNumber, final String bio) {
-        // URL of the PHP script to check for duplicate username (change this to your actual URL)
         String url = "https://lamp.ms.wits.ac.za/home/s2611748/registration.php";
 
-        // Create a new Volley request queue
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        // Map to hold the POST request parameters
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
 
-        // Create the POST request to check if username exists
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            String message = jsonResponse.getString("message");
 
-                    if (success) {
-                        // Username is available, proceed with registration
-                        registerUser(username, email, password, phoneNumber, bio);
-                    } else {
-                        // Username already exists
-                        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+                            if (success) {
+                                registerUser(username, email, password, phoneNumber, bio);
+                            } else {
+                                Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(RegisterActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(RegisterActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Toast.makeText(RegisterActivity.this, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
-            }
-        }) {
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Toast.makeText(RegisterActivity.this, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
             @Override
             protected Map<String, String> getParams() {
-                // Return the parameters to be sent in the POST request
                 return params;
             }
         };
 
-        // Add the request to the Volley request queue
         queue.add(request);
     }
 
-    // Method to register user by sending data to PHP server
     private void registerUser(String username, String email, String password, String phoneNumber, String bio) {
-        // URL of your PHP script to handle registration
         String url = "https://lamp.ms.wits.ac.za/home/s2611748/registration2.php";
 
-        // Create a new Volley request queue
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        // Map to hold the POST request parameters
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("email", email);
@@ -167,42 +156,40 @@ public class RegisterActivity extends AppCompatActivity {
         params.put("phone_number", phoneNumber);
         params.put("bio", bio);
 
-        // Create the POST request with Volley
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String message = jsonResponse.getString("message");
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            String message = jsonResponse.getString("message");
 
-                    if (success) {
-                        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                    } else {
-                        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                            if (success) {
+                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                finish();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(RegisterActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(RegisterActivity.this, "Error parsing response.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Toast.makeText(RegisterActivity.this, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
-            }
-        }) {
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Toast.makeText(RegisterActivity.this, "Error communicating with the server.", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
             @Override
             protected Map<String, String> getParams() {
-                // Return the parameters to be sent in the POST request
                 return params;
             }
         };
 
-        // Add the request to the Volley request queue
         queue.add(request);
     }
 }
-
