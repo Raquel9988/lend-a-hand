@@ -39,16 +39,26 @@ public class UpdateActivity extends AppCompatActivity {
         }
     }
 
+    // Validate phone number using the same pattern as RegisterActivity
+    private boolean isValidPhoneNumber(String phone) {
+        String phonePattern = "^\\+27[0-9]{9}$";
+        return phone.matches(phonePattern);
+    }
+
+    // Update contact number with SA format validation
     public void docontact(View v) {
         String phone = phonenumber.getText().toString().trim();
 
         if (phone.isEmpty()) {
             Toast.makeText(this, "Phone number cannot be empty", Toast.LENGTH_SHORT).show();
+        } else if (!isValidPhoneNumber(phone)) {
+            Toast.makeText(this, "Phone number must start with +27 followed by 9 digits.", Toast.LENGTH_SHORT).show();
         } else {
             new UpdateContactTask().execute(phone);
         }
     }
 
+    // Update bio
     public void doBio(View v) {
         String newBio = bio.getText().toString().trim();
 
@@ -139,9 +149,10 @@ public class UpdateActivity extends AppCompatActivity {
         }
     }
 
+    // Go back to HomeActivity
     public void DoBack(View view) {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
-        finish(); // Optional: close current activity so it's removed from the back stack
+        finish(); // Close current activity
     }
 }
